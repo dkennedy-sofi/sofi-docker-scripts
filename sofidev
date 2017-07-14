@@ -1,0 +1,34 @@
+function sofidev --description 'Set up docker dev environment -c clean -p pull -r restart'
+	switch $argv
+        case '-c'
+            sudo rm -rf ~/git/dev-compose-env/data/mysql
+            sudo rm -rf ~/git/dev-compose-env/data/postgres
+            set pull true
+            set restart true
+        case '-p'
+            set pull true
+            set restart true
+        case '-r'
+            set restart true
+    end
+    if test $restart
+        dma restart sofi
+    end
+    eval (dma env sofi)
+    if test $pull
+        dco pull core-dbmigrate
+    end
+    dco up db-init
+    if test $pull
+        pushd ~/git/dev-compose-env/
+        git pull
+        popd
+    end
+    ~/git/dev-compose-env/docker-cleanup.sh
+    if test $pull
+        dco pull
+    end
+    dco up -d authorize
+    dfo restart
+    dco ps
+end
