@@ -1,0 +1,3 @@
+function dma
+	docker-machine $argv
+end
