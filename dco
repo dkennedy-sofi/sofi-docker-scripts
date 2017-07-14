@@ -1,0 +1,5 @@
+function dco
+	pushd ~/git/dev-compose-env
+docker-compose $argv
+popd
+end
